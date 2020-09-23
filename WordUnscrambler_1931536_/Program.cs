@@ -16,11 +16,12 @@ namespace WordUnscrambler_1931536_
             bool again = true;
             string input = "y";
             bool error = true;
-            while (again && error)
+            while (again || error)
             {
 
                 try
                 {
+                    Console.Title = "Word Unscrambler";
                     Console.WriteLine("Enter the scrambled words manually or as a file: f - file, m = manual");
 
                     string option = Console.ReadLine() ?? throw new Exception("String is null");
@@ -38,18 +39,45 @@ namespace WordUnscrambler_1931536_
                         default:
                             throw new Exception("The entered option was not recognized");
                     }
-                    Console.WriteLine("Would you like to do it again?[y/n]");
-                    input = Console.ReadLine();
-                    if (input.Equals("y", StringComparison.OrdinalIgnoreCase))
+                   
+                    //if (input.Equals("y", StringComparison.OrdinalIgnoreCase))
+                    //{
+                    //    again = true;
+                    //    error = true;
+                    //}
+                    //else
+                    //{
+                    //    again = false;
+                    //    error = false;
+                    //}
+                    bool errorAgain = true;
+                    while(errorAgain)
                     {
-                        again = true;
-                        error = true;
+                        Console.WriteLine("Would you like to do it again?[y/n]");
+                        input = Console.ReadLine();
+                        switch (input)
+                        {
+                            case "y":
+                            case "Y":
+                                again = true;
+                                error = false;
+                                errorAgain = false;
+                                break;
+                            case "n":
+                            case "N":
+                                again = false;
+                                error = false;
+                                errorAgain = false;
+                                break;
+                            default:
+                                Console.WriteLine("Unknown option \""+input+"\"");
+                                again = false;
+                                error = false;
+                                errorAgain = true;
+                                break;
+                        }
                     }
-                    else
-                    {
-                        again = false;
-                        error = false;
-                    }
+                   
                 }
                 catch (Exception e)
                 {
@@ -80,7 +108,7 @@ namespace WordUnscrambler_1931536_
 
         private static void DisplayMatchedScrambledWords(string[] scrambledWords)
         {
-            string[] wordList = fileReader.Read(@"wordlist.txt"); // Put in a constants file. CAPITAL LETTERS.  READONLY.
+            string[] wordList = fileReader.Read(Constant.FILE); // Put in a constants file. CAPITAL LETTERS.  READONLY.
 
             List<MatchedWord> matchedWords = wordMatcher.Match(scrambledWords, wordList);
 
